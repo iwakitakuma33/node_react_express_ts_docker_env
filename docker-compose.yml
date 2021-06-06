@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+    frontend:
+        # image: node:9.11
+        container_name: "frontend"
+        build: ./frontend/
+        ports:
+            - 8080:8080
+        volumes:
+            - ./frontend/app:/home/node/app
+        command: npm start
+
+    backend:
+        # image: node:9.11
+        container_name: "backend"
+        build: ./backend/
+        ports:
+            - 8888:3000
+        volumes:
+            - ./backend/app:/home/node/app
+        depends_on:
+            - database
+        command: npm start
+
+    database:
+        restart: always
+        image: mongo:latest
+        container_name: "database"
+        environment:
+            - MONGO_DATA_DIR=/data/db
+            - MONGO_LOG_DIR=/dev/null
+        volumes:
+            - ./data/:/data/db
+        ports:
+            - 27017:27017
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
